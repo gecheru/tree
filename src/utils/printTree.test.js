@@ -1,20 +1,78 @@
+import { beforeEach, describe, it, test, jest, afterEach, expect } from '@jest/globals'
 import { printTree } from "./printTree.js";
 
-export const data = { 
-  name: 1, 
-  items: [ 
-    { 
-      name: 2, 
-      items: [{ name: 3 }, { name: 4 }] 
-    }, 
-    { 
-      name: 5, 
-      items: [{ name: 6 }] 
-    } 
-  ] 
-};
+describe('printTree', () => {
+  let consoleSpy;
 
-test('printTree', () => {
-  printTree(data)
-  expect(1).toBe(1)
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log')
+  })
+  
+  afterEach(() => {
+    consoleSpy.mockRestore()
+  })
+
+  it('should render single node', () => {
+    const data = {
+      name: 1
+    }
+
+    printTree(data)
+
+    expect(consoleSpy).toHaveBeenCalledWith('└── 1')
+  })
+
+  it('should render child node', () => {
+    const data = {
+      name: 1,
+      items: [
+        { name: 2 }
+      ]
+    }
+
+    printTree(data)
+
+    expect(consoleSpy).toHaveBeenCalledWith('└── 1')
+    expect(consoleSpy).toHaveBeenCalledWith('    └── 2')
+    expect(consoleSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should render child node with siblings', () => {
+    const data = {
+      name: 1,
+      items: [
+        { name: 2 },
+        { name: 3 },
+      ]
+    }
+
+    printTree(data)
+
+    expect(consoleSpy).toHaveBeenCalledWith('└── 1')
+    expect(consoleSpy).toHaveBeenCalledWith('    ├── 2')
+    expect(consoleSpy).toHaveBeenCalledWith('    └── 3')
+    expect(consoleSpy).toHaveBeenCalledTimes(3)
+  })
+
+  it('should render siblings with child node', () => {
+    const data = {
+      name: 1,
+      items: [
+        { name: 2,
+          items: [
+            { name: 4 },
+          ]
+        },
+        { name: 3 },
+      ]
+    }
+
+    printTree(data)
+
+    expect(consoleSpy).toHaveBeenCalledWith('└── 1')
+    expect(consoleSpy).toHaveBeenCalledWith('    ├── 2')
+    expect(consoleSpy).toHaveBeenCalledWith('    │   └── 4')
+    expect(consoleSpy).toHaveBeenCalledWith('    └── 3')
+    expect(consoleSpy).toHaveBeenCalledTimes(4)
+  })
 })
