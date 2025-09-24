@@ -75,4 +75,19 @@ describe('printTree', () => {
     expect(consoleSpy).toHaveBeenCalledWith('    └── 3')
     expect(consoleSpy).toHaveBeenCalledTimes(4)
   })
+
+  it('should render top level nodes without children', () => {
+    const data = [
+      { name: 1 },
+      { name: 2 },
+      { name: 3 }
+    ]
+
+    printTree(data)
+
+    expect(consoleSpy).toHaveBeenCalledWith('├── 1')
+    expect(consoleSpy).toHaveBeenCalledWith('├── 2')
+    expect(consoleSpy).toHaveBeenCalledWith('└── 3')
+    expect(consoleSpy).toHaveBeenCalledTimes(3)
+  })
 })
